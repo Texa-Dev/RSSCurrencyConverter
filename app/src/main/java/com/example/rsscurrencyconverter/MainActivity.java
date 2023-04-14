@@ -9,14 +9,12 @@ import androidx.loader.content.Loader;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.text.style.BackgroundColorSpan;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.rsscurrencyconverter.data.Currency;
 import com.example.rsscurrencyconverter.databinding.ActivityMainBinding;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -33,7 +31,7 @@ public class MainActivity extends AppCompatActivity
     private ActivityMainBinding binding;
     private static final String ADR = "https://api.privatbank.ua/p24api/pubinfo?exchange&json&coursid=11";
     public static final int LOADER_ID = 1;
-    public static final String OTHER_KEY = "adr_key";
+    public static final String ADR_KEY = "adr_key";
     private Loader<List<Currency>> loader;
 
     @Override
@@ -47,7 +45,7 @@ public class MainActivity extends AppCompatActivity
 
         //2var
         Bundle bundle = new Bundle();
-        bundle.putString(OTHER_KEY, ADR);
+        bundle.putString(ADR_KEY, ADR);
         loader = LoaderManager.getInstance(this)
                 .initLoader(LOADER_ID, bundle, this);
 
@@ -70,13 +68,13 @@ public class MainActivity extends AppCompatActivity
                     //load
                     try {
                         TimeUnit.SECONDS.sleep(10);
-                        URL url = new URL(args.getString(OTHER_KEY));
+                        URL url = new URL(args.getString(ADR_KEY));
                         return new Gson().
                                 fromJson(new JsonReader(new InputStreamReader(url.openStream())),
                                         new TypeToken<ArrayList<Currency>>() {
                                         });
                     } catch (Exception e) {
-                        Log.d(TAG, "Blia" + e);
+                        Log.d(TAG, "Some error: " + e);
                     }
                     return null;
                 }
