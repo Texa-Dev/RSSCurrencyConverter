@@ -13,7 +13,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.rsscurrencyconverter.data.Currency;
+import com.example.rsscurrencyconverter.data.CurrencyConverter;
 import com.example.rsscurrencyconverter.databinding.ActivityMainBinding;
+import com.example.rsscurrencyconverter.menu.MenuManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -53,6 +55,16 @@ public class MainActivity extends AppCompatActivity
         loader.registerOnLoadCanceledListener(this);
         //
         loader.forceLoad();
+        binding.srcCurrency.setTag(Currency.BASE);
+        binding.destCurrency.setTag(Currency.BASE);
+
+        binding.convertBtn.setOnClickListener(view -> {
+            binding.destValue.setText(CurrencyConverter.convert(
+                    binding.srcValue.getText().toString(),
+                    ((Currency)binding.srcCurrency.getTag()).getBuy(),
+                    binding.destValue.getText().toString(),
+                    ((Currency)binding.destCurrency.getTag()).getBuy()));
+        });
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -87,6 +99,13 @@ public class MainActivity extends AppCompatActivity
     public void onLoadFinished(@NonNull Loader<List<Currency>> loader, List<Currency> data) {
         Log.d(TAG, "finish: " + data);
         Toast.makeText(this, data.toString(), Toast.LENGTH_SHORT).show();
+
+        binding.srcCurrency.setOnClickListener(v -> {
+            MenuManager.currencyPopUp(this,data,binding.srcCurrency,binding.srcValue);
+        });
+        binding.destCurrency.setOnClickListener(v -> {
+            MenuManager.currencyPopUp(this,data,binding.destCurrency,binding.destValue);
+        });
     }
 
     @Override
